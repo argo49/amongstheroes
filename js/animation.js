@@ -36,32 +36,38 @@ function square(context, x, y, size, color){
 	context.closePath();
 	context.fill();
 }
-
-//pass an Image() object
-function image(image){
-	var height = image.height;
-	var width = image.width;
-	$('#content').append($('<canvas width="' + width + '" height="' + height + '"/>'))
-
-}
-			
+		
 function draw(){
 	var canvas = $('#canvas')[0];
+	var jqCanvas = $($('#canvas')[0]);
 	var ctx = canvas.getContext('2d');
-	var canvasWidth = $(canvas).attr('width');
-	var canvasHeight = $(canvas).attr('height');
+	var canvasWidth  = jqCanvas.attr('width');
+	var canvasHeight = jqCanvas.attr('height');
+	var canvasX = Number(jqCanvas.css('left').substring(0,jqCanvas.css('left').length-2));
+	var canvasY = Number(jqCanvas.css('top').substring(0,jqCanvas.css('top').length-2));
 
 	//draw the background image to fill canvas
 	var backgroundImage = document.getElementById('background');
 	ctx.drawImage(backgroundImage, 0, 0, canvasWidth, canvasHeight);
 
-	//draw moons on top of planet
-	var backgroundImage = document.getElementById('moons');
-	var moonX = (canvasWidth / 11);
-	var moonY = (canvasHeight / 6);
+
+	//draw moons on top of planet in moonCanvas
 	var moonW = (canvasWidth / 2.3);
 	var moonH = (canvasWidth / 2.3);
-	ctx.drawImage(moons, moonX, moonY, moonW, moonH);
+	var moonX = canvasX + (canvasWidth / 11);
+	var moonY = canvasY + (canvasHeight / 6);
+	var moonCanvas = $('#moonCanvas')
+		.attr('width', moonW)
+		.attr('height', moonH)
+		.css({
+			left:moonX,
+			top:moonY
+		});
+	var moonCtx = moonCanvas[0].getContext('2d');
+	moonCanvas.attr('width', moonW);
+	moonCanvas.attr('height', moonH);
+	moonCtx.drawImage(moons, 0, 0, moonW, moonH);
+
 
 }
 
