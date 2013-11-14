@@ -36,7 +36,9 @@ function square(context, x, y, size, color){
 	context.closePath();
 	context.fill();
 }
-		
+
+var moonInterval;
+
 function draw(){
 	var canvas = $('#canvas')[0];
 	var jqCanvas = $($('#canvas')[0]);
@@ -50,8 +52,19 @@ function draw(){
 	var backgroundImage = document.getElementById('background');
 	ctx.drawImage(backgroundImage, 0, 0, canvasWidth, canvasHeight);
 
+	//make moons rotate sensually
+	if(!moonInterval){
+		moonInterval = window.setInterval(function(){
+			drawMoons(canvasX, canvasY, canvasWidth, canvasHeight);
+		}, 50);
+	}
+}
 
+
+var moonDegrees = 0;
+function drawMoons(canvasX, canvasY, canvasWidth, canvasHeight){
 	//draw moons on top of planet in moonCanvas
+	var moons = document.getElementById('moons');
 	var moonW = (canvasWidth / 2.3);
 	var moonH = (canvasWidth / 2.3);
 	var moonX = canvasX + (canvasWidth / 11);
@@ -66,9 +79,22 @@ function draw(){
 	var moonCtx = moonCanvas[0].getContext('2d');
 	moonCanvas.attr('width', moonW);
 	moonCanvas.attr('height', moonH);
-	moonCtx.drawImage(moons, 0, 0, moonW, moonH);
 
+	//make the moons rotate slowly and sensually
+	moonDegrees += 0.2;
+	rotateCanvas(moonDegrees, moonCanvas[0], moons)
+}
 
+function rotateCanvas(degrees, canvas, imageToRotate){
+	var ctx = canvas.getContext('2d');
+	var canvasHeight = $(canvas).attr('height');
+	var canvasWidth = $(canvas).attr('width');
+
+	ctx.save();
+		ctx.translate(canvasWidth/2, canvasHeight/2);
+		ctx.rotate(degrees*(Math.PI/180))
+		ctx.drawImage(imageToRotate, -canvasWidth/2, -canvasHeight/2, canvasWidth, canvasHeight);
+	ctx.restore();
 }
 
 function preloadImages(imageSRCs){
@@ -106,6 +132,8 @@ function resize(){
 	var newCanvasHeight;
 	var newTop;
 	var bgImage = $('#background');
+	clearInterval(moonInterval);
+	moonInterval = undefined;
 
 	if(bgImage){
 		newCanvasHeight = (bgImage.height()/bgImage.width())*windowWidth;
