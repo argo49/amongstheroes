@@ -41,6 +41,10 @@ canvas{
 	opacity: 0.2;
 }
 
+.moon{
+	position: absolute;
+}
+
 @font-face{
 	font-family: moonshiner;
 	src: url('../fonts/Moonshiner-Round.otf');
